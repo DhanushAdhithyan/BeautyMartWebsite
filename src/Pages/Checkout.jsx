@@ -16,14 +16,11 @@ const deliveryMethods = [
 ];
 
 export default function Checkout() {
-  const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState(deliveryMethods[0]);
-  const {
-    cart,
-    subtotal,
-    getAllCart,
-    getTotalPrice,
-    render,
-  } = useContext(cartContext);
+  const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState(
+    deliveryMethods[0]
+  );
+  const { cart, subtotal, getAllCart, getTotalPrice, render } =
+    useContext(cartContext);
   const [formData, setFormData] = useState({});
 
   useEffect(() => {
@@ -41,7 +38,7 @@ export default function Checkout() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const templateParams = {
       to_email: formData["email-address"],
       from_name: "Beauty Mart",
@@ -53,14 +50,26 @@ export default function Checkout() {
       phone: formData.phone || "N/A",
       deliveryMethod: selectedDeliveryMethod?.title || "N/A",
       cartItems: cart.length
-        ? cart.map((item) => `${item.name} (x${item.quantity}) - $${item.price}`).join("\n")
+        ? cart
+            .map((item) => `${item.name} (x${item.quantity}) - $${item.price}`)
+            .join("\n")
         : "No items",
       total: subtotal ? `$${subtotal}` : "N/A",
     };
 
     try {
-      await emailjs.send("service_8rbbb4b", "template_q83entp", { ...templateParams, to_email: "your-email@example.com" }, "sLD3si9EicpcVqgNl");
-      await emailjs.send("service_8rbbb4b", "template_0vm5pth", templateParams, "sLD3si9EicpcVqgNl");
+      await emailjs.send(
+        "service_8rbbb4b",
+        "template_q83entp",
+        { ...templateParams, to_email: "your-email@example.com" },
+        "sLD3si9EicpcVqgNl"
+      );
+      await emailjs.send(
+        "service_8rbbb4b",
+        "template_0vm5pth",
+        templateParams,
+        "sLD3si9EicpcVqgNl"
+      );
       alert("Order confirmation sent to you and the customer!");
     } catch (error) {
       console.error("Failed to send email:", error);
@@ -74,7 +83,9 @@ export default function Checkout() {
         <form onSubmit={handleSubmit}>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Email address</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Email address
+              </label>
               <input
                 type="email"
                 name="email-address"
@@ -83,7 +94,9 @@ export default function Checkout() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">First Name</label>
+              <label className="block text-sm font-medium text-gray-700">
+                First Name
+              </label>
               <input
                 type="text"
                 name="first-name"
@@ -92,7 +105,9 @@ export default function Checkout() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Last Name</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Last Name
+              </label>
               <input
                 type="text"
                 name="last-name"
@@ -101,7 +116,9 @@ export default function Checkout() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Address</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Address
+              </label>
               <input
                 type="text"
                 name="address"
@@ -110,20 +127,47 @@ export default function Checkout() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Delivery Method</label>
-              <RadioGroup value={selectedDeliveryMethod} onChange={setSelectedDeliveryMethod} className="mt-2 space-y-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Phone Number
+              </label>
+              <input
+                type="text"
+                name="phone"
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                onChange={handleInputChange}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Delivery Method
+              </label>
+              <RadioGroup
+                value={selectedDeliveryMethod}
+                onChange={setSelectedDeliveryMethod}
+                className="mt-2 space-y-2"
+              >
                 {deliveryMethods.map((method) => (
                   <div
                     key={method.id}
-                    className={`border p-3 rounded-md flex justify-between items-center cursor-pointer ${selectedDeliveryMethod.id === method.id ? 'border-indigo-500' : 'border-gray-300'}`}
+                    className={`border p-3 rounded-md flex justify-between items-center cursor-pointer ${
+                      selectedDeliveryMethod.id === method.id
+                        ? "border-indigo-500"
+                        : "border-gray-300"
+                    }`}
                     onClick={() => setSelectedDeliveryMethod(method)}
                   >
                     <span>
-                      <span className="block text-sm font-medium">{method.title}</span>
-                      <span className="text-sm text-gray-500">{method.turnaround}</span>
+                      <span className="block text-sm font-medium">
+                        {method.title}
+                      </span>
+                      <span className="text-sm text-gray-500">
+                        {method.turnaround}
+                      </span>
                     </span>
                     <span className="text-sm font-medium">{method.price}</span>
-                    {selectedDeliveryMethod.id === method.id && <CheckCircleIcon className="size-5 text-indigo-600" />}
+                    {selectedDeliveryMethod.id === method.id && (
+                      <CheckCircleIcon className="size-5 text-indigo-600" />
+                    )}
                   </div>
                 ))}
               </RadioGroup>
